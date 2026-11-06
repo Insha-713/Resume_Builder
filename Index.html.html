@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resume Builder</title>
+<style>
+:root{--bg:#f3f4f6;--pn:#fff;--tx:#1f2937;--mu:#6b7280;--bd:#d1d5db;--ac:#2563eb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111827;--pn:#1f2937;--tx:#f3f4f6;--mu:#9ca3af;--bd:#374151;--ac:#60a5fa}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.4 system-ui,Segoe UI,Arial,sans-serif}
+.app{display:grid;grid-template-columns:minmax(300px,400px) 1fr;gap:16px;padding:16px;align-items:start}
+@media(max-width:900px){.app{grid-template-columns:1fr}}
+.panel{background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:14px}
+h1{font-size:18px;margin:0 0 2px}.sub{color:var(--mu);margin:0 0 12px;font-size:12px}
+h3{font-size:13px;margin:16px 0 6px;text-transform:uppercase;letter-spacing:.05em;color:var(--mu)}
+label{display:block;font-size:12px;color:var(--mu);margin:6px 0 2px}
+input,textarea,select{width:100%;padding:7px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx);font:inherit}
+textarea{min-height:60px;resize:vertical}
+button{font:inherit;padding:7px 12px;border:1px solid var(--bd);border-radius:6px;background:var(--pn);color:var(--tx);cursor:pointer}
+button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.card{border:1px dashed var(--bd);border-radius:8px;padding:8px;margin:8px 0}
+.ord{list-style:none;margin:0;padding:0}
+.ord li{display:flex;align-items:center;gap:8px;padding:7px 9px;border:1px solid var(--bd);border-radius:6px;margin-bottom:4px;background:var(--bg);cursor:grab}
+.ord li.over{border-color:var(--ac)}.ord .h{color:var(--mu)}.ord .n{flex:1}.ord button{padding:1px 7px}
+.pv{overflow-x:auto;position:sticky;top:8px}
+.note{font-size:12px;color:var(--mu);margin:6px 0}
+/* sheet */
+.sheet{width:210mm;min-height:297mm;background:#fff;color:#111;margin:0 auto;padding:14mm;box-shadow:0 2px 14px rgba(0,0,0,.25);font-size:10.5pt;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sheet .it{break-inside:avoid;page-break-inside:avoid;margin-bottom:3mm}
+.sheet h2{break-after:avoid;page-break-after:avoid;margin:0}
+.sheet .sec{margin-top:5mm}.sheet .hd{margin-bottom:2mm}
+.sheet .t{font-weight:700}.sheet .m{color:#555;font-size:9.5pt}.sheet .d{white-space:pre-line;margin-top:.5mm}
+.sheet .top{display:flex;justify-content:space-between;gap:4mm}
+.sheet .ct span+span::before{content:" · ";color:#888}
+/* T1 classic */
+.t1{font-family:Georgia,"Times New Roman",serif}
+.t1 .hd1{text-align:center;border-bottom:1.5pt solid #111;padding-bottom:3mm}
+.t1 .nm{font-size:25pt;letter-spacing:.04em}.t1 .ti{font-style:italic;color:#444}
+.t1 h2{font-size:11pt;text-transform:uppercase;letter-spacing:.12em;border-bottom:.5pt solid #999;padding-bottom:1mm;margin-bottom:2mm}
+/* T2 modern */
+.t2{font-family:"Segoe UI",Helvetica,Arial,sans-serif;padding:0}
+.t2 .hd1{background:#1e3a8a;color:#fff;padding:12mm 14mm 8mm}
+.t2 .nm{font-size:27pt;font-weight:300}.t2 .ti{color:#bfdbfe;font-size:12pt}.t2 .ct{color:#dbeafe;font-size:9.5pt;margin-top:2mm}
+.t2 .body{padding:2mm 14mm 14mm}
+.t2 h2{font-size:10.5pt;color:#1e3a8a;text-transform:uppercase;letter-spacing:.1em;border-left:3pt solid #f59e0b;padding-left:2.5mm;margin-bottom:2mm}
+.t2 .sk span{display:inline-block;background:#dbeafe;color:#1e3a8a;border-radius:10px;padding:.5mm 3mm;margin:0 1.5mm 1.5mm 0;font-size:9.5pt}
+/* T3 bold grid */
+.t3{font-family:"Trebuchet MS",Verdana,sans-serif;font-size:10pt}
+.t3 .nm{font-size:34pt;font-weight:900;line-height:1;text-transform:uppercase;color:#be123c}
+.t3 .ti{font-size:12pt;font-weight:700;margin-top:2mm}.t3 .ct{margin-top:2mm;padding-bottom:4mm;border-bottom:4pt solid #111}
+.t3 .sec{display:grid;grid-template-columns:34mm 1fr;gap:4mm;border-bottom:.5pt solid #ccc;padding-bottom:3mm}
+.t3 h2{font-size:9.5pt;text-transform:uppercase;letter-spacing:.08em;color:#be123c;font-weight:800}
+.t3 .hd{display:none}
+@media print{
+ @page{size:A4;margin:14mm}
+ body{background:#fff}.app{display:block;padding:0}.panel,.note{display:none!important}
+ .pv{position:static;overflow:visible}
+ .sheet{box-shadow:none;margin:0;width:auto;min-height:0;padding:0}
+ .t2{padding:0}.t2 .hd1{margin:0 0 4mm}.t2 .body{padding:0}
+}
+</style></head><body>
+<div class="app">
+<div class="panel" id="form">
+ <h1>Resume Builder</h1><p class="sub">Everything stays on your device. Works offline.</p>
+ <label>Template</label>
+ <select id="tpl"><option value="t1">1 · Classic (serif, centred)</option><option value="t2">2 · Modern (colour header, chips)</option><option value="t3">3 · Bold (grid, big name)</option></select>
+ <h3>Details</h3><div id="pf"></div>
+ <h3>Section order <span style="text-transform:none;letter-spacing:0">(drag, or use arrows)</span></h3>
+ <ul class="ord" id="ord"></ul>
+ <div id="lists"></div>
+ <div class="row">
+  <button class="p" id="pdf">Export PDF</button>
+  <button id="save">Save data file</button>
+  <button id="load">Load data file</button>
+  <input type="file" id="file" accept=".json,application/json" hidden>
+ </div>
+ <p class="note">Export PDF opens your print dialog: choose “Save as PDF”, paper A4, margins default, background graphics on. Text stays selectable.</p>
+</div>
+<div class="pv"><div class="note" id="pg" style="text-align:center"></div><div class="sheet t1" id="sheet"></div></div>
+</div>
+<script>
+var LABEL={summary:"Summary",experience:"Experience",projects:"Projects",education:"Education",skills:"Skills"};
+var LISTS={experience:[["role","Role"],["org","Company"],["dates","Dates"],["desc","Details (one point per line)","ta"]],
+ projects:[["role","Project name"],["org","Tech / link"],["dates","Year"],["desc","Details","ta"]],
+ education:[["role","Degree"],["org","School"],["dates","Years"],["desc","Notes","ta"]]};
+var PF=[["name","Full name"],["title","Job title"],["email","Email"],["phone","Phone"],["location","Location"],["link","Website / LinkedIn"]];
+function blank(){return{tpl:"t1",name:"Riya Sharma",title:"Data Analyst",email:"riya@example.com",phone:"+91 90000 00000",location:"Lucknow, India",link:"",
+ summary:"Analyst who turns messy data into clear decisions.",skills:"Python, SQL, Excel, Power BI",
+ experience:[{role:"Data Intern",org:"Acme Corp",dates:"2025",desc:"Built weekly dashboards\nCut report time by 40%"}],
+ projects:[{role:"PDF Studio",org:"JavaScript",dates:"2026",desc:"Offline PDF toolkit"}],
+ education:[{role:"BCA, Data Science",org:"SRMU",dates:"2023–2026",desc:""}],
+ order:["summary","experience","projects","education","skills"]}}
+var D=blank();
+try{var s=localStorage.getItem("resume-data");if(s)D=Object.assign(blank(),JSON.parse(s))}catch(e){}
+var $=function(i){return document.getElementById(i)};
+function esc(x){return String(x==null?"":x).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function persist(){try{localStorage.setItem("resume-data",JSON.stringify(D))}catch(e){}}
+function secHTML(k){
+ var h="";
+ if(k==="summary"){if(!D.summary.trim())return"";h='<div class="it d">'+esc(D.summary)+'</div>'}
+ else if(k==="skills"){var a=D.skills.split(",").map(function(x){return x.trim()}).filter(Boolean);if(!a.length)return"";
+  h=D.tpl==="t2"?'<div class="sk">'+a.map(function(x){return"<span>"+esc(x)+"</span>"}).join("")+"</div>":'<div class="it">'+a.map(esc).join(" · ")+"</div>"}
+ else{var L=D[k]||[];if(!L.length)return"";
+  h=L.map(function(e){return'<div class="it"><div class="top"><span class="t">'+esc(e.role)+'</span><span class="m">'+esc(e.dates)+'</span></div>'+(e.org?'<div class="m">'+esc(e.org)+'</div>':"")+(e.desc?'<div class="d">'+esc(e.desc)+'</div>':"")+'</div>'}).join("")}
+ return'<div class="sec"><h2>'+LABEL[k]+'</h2><div class="bd">'+h+'</div></div>';
+}
+function render(){
+ var sh=$("sheet");sh.className="sheet "+D.tpl;
+ var ct=[D.email,D.phone,D.location,D.link].filter(Boolean).map(function(x){return"<span>"+esc(x)+"</span>"}).join("");
+ var head='<div class="hd1"><div class="nm">'+esc(D.name)+'</div><div class="ti">'+esc(D.title)+'</div><div class="ct">'+ct+'</div></div>';
+ var body=D.order.map(secHTML).join("");
+ sh.innerHTML=D.tpl==="t2"?head+'<div class="body">'+body+'</div>':head+body;
+ var mm=sh.scrollHeight/3.7795,n=Math.max(1,Math.ceil((mm-1)/269));
+ $("pg").textContent="A4 preview · about "+n+" page"+(n>1?"s":"")+" when exported";
+ persist();
+}
+function buildForm(){
+ $("tpl").value=D.tpl;
+ $("pf").innerHTML=PF.map(function(f){return'<label>'+f[1]+'</label><input data-k="'+f[0]+'" value="'+esc(D[f[0]])+'">'}).join("")+
+  '<label>Summary</label><textarea data-k="summary">'+esc(D.summary)+'</textarea><label>Skills (comma separated)</label><input data-k="skills" value="'+esc(D.skills)+'">';
+ $("lists").innerHTML=Object.keys(LISTS).map(function(k){
+  return"<h3>"+LABEL[k]+'</h3>'+(D[k]||[]).map(function(e,i){
+   return'<div class="card">'+LISTS[k].map(function(f){return'<label>'+f[1]+'</label>'+(f[2]?'<textarea':'<input')+' data-l="'+k+'" data-i="'+i+'" data-f="'+f[0]+'"'+(f[2]?'>'+esc(e[f[0]])+'</textarea>':' value="'+esc(e[f[0]])+'">')}).join("")+
+   '<div class="row"><button data-rm="'+k+'" data-i="'+i+'">Remove</button></div></div>'}).join("")+'<button data-add="'+k+'">+ Add</button>'}).join("");
+ buildOrder();
+}
+function buildOrder(){
+ $("ord").innerHTML=D.order.map(function(k,i){return'<li draggable="true" data-i="'+i+'"><span class="h">⠿</span><span class="n">'+LABEL[k]+'</span><button data-up="'+i+'">↑</button><button data-dn="'+i+'">↓</button></li>'}).join("");
+}
+function move(a,b){if(b<0||b>=D.order.length)return;var x=D.order.splice(a,1)[0];D.order.splice(b,0,x);buildOrder();render()}
+document.addEventListener("input",function(e){var t=e.target;
+ if(t.id==="tpl"){D.tpl=t.value;render();return}
+ if(t.dataset.k){D[t.dataset.k]=t.value;render()}
+ else if(t.dataset.l){D[t.dataset.l][+t.dataset.i][t.dataset.f]=t.value;render()}});
+document.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)return;var d=t.dataset;
+ if(d.add){D[d.add].push({role:"",org:"",dates:"",desc:""});buildForm();render()}
+ else if(d.rm){D[d.rm].splice(+d.i,1);buildForm();render()}
+ else if(d.up!==undefined)move(+d.up,+d.up-1);
+ else if(d.dn!==undefined)move(+d.dn,+d.dn+1)});
+var dragI=null,ord=$("ord");
+ord.addEventListener("dragstart",function(e){var li=e.target.closest("li");if(!li)return;dragI=+li.dataset.i;try{e.dataTransfer.setData("text/plain",dragI);e.dataTransfer.effectAllowed="move"}catch(x){}});
+ord.addEventListener("dragover",function(e){e.preventDefault();var li=e.target.closest("li");[].forEach.call(ord.children,function(c){c.classList.remove("over")});if(li)li.classList.add("over")});
+ord.addEventListener("drop",function(e){e.preventDefault();var li=e.target.closest("li");if(li&&dragI!==null)move(dragI,+li.dataset.i);dragI=null});
+ord.addEventListener("dragend",function(){buildOrder()});
+$("pdf").onclick=function(){render();setTimeout(function(){window.print()},50)};
+$("save").onclick=function(){var b=new Blob([JSON.stringify(D,null,2)],{type:"application/json"}),a=document.createElement("a");
+ a.href=URL.createObjectURL(b);a.download="resume-data.json";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},1000)};
+$("load").onclick=function(){$("file").click()};
+$("file").onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();
+ r.onload=function(){try{var j=JSON.parse(r.result);if(typeof j!=="object"||!j)throw 0;D=Object.assign(blank(),j);buildForm();render()}catch(x){alert("That file isn’t a valid resume data file.")}};
+ r.readAsText(f);e.target.value=""};
+buildForm();render();
+</script></body></html>
